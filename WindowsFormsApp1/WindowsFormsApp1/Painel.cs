@@ -6,6 +6,7 @@ namespace WindowsFormsApp1
 {
     class Painel : Panel
     {
+        private bool[] setasDeMovimentacao = new bool[4];
         private int fps = 1000 / 20;
         public int px, py;
         public bool jogando = true;
@@ -24,6 +25,7 @@ namespace WindowsFormsApp1
             {
                 if (Environment.TickCount >= prxAtualizacao)
                 {
+                    AtualizaJogo();
                     Invoke(new Action(() => Refresh()));
                     prxAtualizacao = Environment.TickCount + fps;
                 }
@@ -68,6 +70,54 @@ namespace WindowsFormsApp1
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Erro");
+            }
+        }
+
+        // Responsável por atualizar a posição do quadrado
+        private void AtualizaJogo()
+        {
+            if (setasDeMovimentacao[0])
+            {
+                py--;
+            }
+            else if (setasDeMovimentacao[1])
+            {
+                py++;
+            }
+            
+            if (setasDeMovimentacao[2])
+            {
+                px--;
+            }
+            else if (setasDeMovimentacao[3])
+            {
+                px++;
+            }
+        }
+
+        // Permtindo quem mais de uma tecla de uma vez
+        // Assim permitindo a movimentação na horizontal
+        public void Movimenta(int seta, bool pressionada)
+        {
+            switch (seta)
+            {
+                case (int)Keys.Escape:
+                    jogando = false;
+                    break;
+                case (int)Keys.Up:
+                    setasDeMovimentacao[0] = pressionada;
+                    break;
+                case (int)Keys.Down:
+                    setasDeMovimentacao[1] = pressionada;
+                    break;
+                case (int)Keys.Left:
+                    setasDeMovimentacao[2] = pressionada;
+                    break;
+                case (int)Keys.Right:
+                    setasDeMovimentacao[3] = pressionada;
+                    break;
+                default:
+                    break;
             }
         }
 

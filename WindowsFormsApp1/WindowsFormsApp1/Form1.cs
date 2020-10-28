@@ -37,31 +37,17 @@ namespace WindowsFormsApp1
 
         private void Form1_KeyPress(object sender, KeyPressEventArgs e)
         {
-           
+            
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
-            switch (e.KeyCode)
-            {
-                case Keys.Escape:
-                    p.jogando = false;
-                    break;
-                case Keys.Up:
-                    p.py--;
-                    break;
-                case Keys.Down:
-                    p.py++;
-                    break;
-                case Keys.Left:
-                    p.px--;
-                    break;
-                case Keys.Right:
-                    p.px++;
-                    break;
-                default:
-                    break;
-            }
+            p.Movimenta((int)e.KeyCode, true);
+        }
+
+        private void Form1_KeyUp(object sender, KeyEventArgs e)
+        {
+            p.Movimenta((int)e.KeyCode, false);
         }
     }
 }
