@@ -23,6 +23,18 @@ namespace PrimeiroJogo.Componentes
         {
             Dock = DockStyle.Fill;
             PreviewKeyDown += Painel_PreviewKeyDown;
+            KeyDown += Painel_KeyDown;
+            KeyUp += Painel_KeyUp;
+        }
+
+        private void Painel_KeyUp(object sender, KeyEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void Painel_KeyDown(object sender, KeyEventArgs e)
+        {
+            
         }
 
         private void Painel_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
@@ -43,10 +55,22 @@ namespace PrimeiroJogo.Componentes
             }
         }
 
-        public void Inicia()
+        private void Inicia()
         {
             // Intancia todos os elementos
-            tiro = new Elemento(0, 0, 1, 0, )
+            tiro = new Elemento(0, 0, 1, 0);
+            jogador = new Elemento(0, 0, larg, larg);
+            // Adicionando a velocidade ao jogador
+            jogador.Velocidade = 5f;
+            blocos = new Elemento[5];
+            // Adicionando os blocos
+            for (int i = 0; i < blocos.Length; i++)
+            {
+                // Faz com que os blocos tenham 10 pixels de espaço entre eles
+                int espaco = i * larg + 10 * (i + 1);
+                blocos[i] = new Elemento(espaco, 0, larg, larg);
+                blocos[i].Velocidade = 1f;
+            }
         }
     }
 }
