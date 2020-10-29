@@ -8,6 +8,7 @@ namespace PrimeiroJogo.Componentes
     class Painel : Panel
     {
         private bool _iniciado = false;
+        private bool _fimDeJogo = false;
         private bool _jogando = true;
         private readonly int _fps = 1000 / 20;
         private Elemento _tiro;
@@ -108,6 +109,84 @@ namespace PrimeiroJogo.Componentes
             _tiro.Altura = Height - _jogador.Altura;
         }
 
+        // Atualiza os dados do jogo
+        private void AtualizaJogo()
+        {
+            if (_fimDeJogo)
+            {
+                return;
+            }
+
+            // Movendo o jogador na horizontal
+            if (_controleTeclas[2])
+            {
+                _jogador.X -= (int)_jogador.Velocidade;
+            }
+            else if (_controleTeclas[3])
+            {
+                _jogador.X += (int)_jogador.Velocidade;
+            }
+
+            // Fazendo o jogador aparecer do lado oposto
+            if (_jogador.X < 0)
+            {
+                _jogador.X = Width - _jogador.Largura;
+            }
+            if ((_jogador.X + _jogador.Largura) > Width)
+            {
+                _jogador.X = 0;
+            }
+
+            // Resetando o tiro
+            _tiro.Y = 0;
+            _tiro.X = _jogador.X + _jogador.Largura / 2;
+
+            // Verificando se algum bloco passou pela linha limite
+            foreach (var b in _blocos)
+            {
+                if (b.Y > _limiteLinha)
+                {
+                    _fimDeJogo = false;
+                    break;
+                }
+
+                // Verificando se houve colisão com o tiro
+                if (Colide(b, _tiro) && b.Y > 0)
+                {
+                    b.Y -= (int)b.Velocidade * 2;
+                    _tiro.Y = b.Y;
+                }
+                else
+                {
+                    int sorte = _rand.Next(10);
+                    if (sorte == 0)
+                    {
+                        b.Y += (int)b.Velocidade + 1;
+                    }
+                    else if (sorte == 5)
+                    {
+                        b.Y -= (int)b.Velocidade;
+                    }
+                    else
+                    {
+                        b.Y += (int)b.Velocidade;
+                    }
+                }
+            }
+            // Adicionando os pontos
+            _pontuacao += _blocos.Length;
+        }
+
+        private bool Colide(Elemento a, Elemento b)
+        {
+            if (a.X + a.Largura >= b.X && a.X <= b.X + b.Largura)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         private void SetaPressionada(int tecla, bool pressionada)
         {
             switch (tecla)
@@ -124,6 +203,27 @@ namespace PrimeiroJogo.Componentes
                 case (int)Keys.Right:
                     _controleTeclas[3] = pressionada;
                     break;
+            }
+        }
+
+        public void Atualiza()
+        {
+            if (_iniciado == false)
+            {
+                Iniciar();
+                _iniciado = true;
+            }
+
+            int prxAtualizacao = 0;
+
+            while (_fimDeJogo) 
+            {
+                if (Environment.TickCount >= prxAtualizacao)
+                {
+                    AtualizaJogo();
+                    Invoke(new Action(() => Refresh()));
+                    prxAtualizacao = Environment.TickCount + _fps;
+                }
             }
         }
     }
