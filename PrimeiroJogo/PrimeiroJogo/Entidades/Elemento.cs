@@ -2,10 +2,10 @@
 {
     class Elemento
     {
-        public int X { get; private set; }
-        public int Y { get; private set; }
-        public int Largura { get; private set; }
-        public int Altura { get; private set; }
+        public int X { get; set; }
+        public int Y { get; set; }
+        public int Largura { get; set; }
+        public int Altura { get; set; }
         public float Velocidade { get; set; }
 
         public Elemento(int x, int y, int largura, int altura)
