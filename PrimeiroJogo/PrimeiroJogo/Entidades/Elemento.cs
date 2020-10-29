@@ -6,15 +6,14 @@
         public int Y { get; private set; }
         public int Largura { get; private set; }
         public int Altura { get; private set; }
-        public float Velocidade { get; private set; }
+        public float Velocidade { get; set; }
 
-        public Elemento(int x, int y, int largura, int altura, float velocidade)
+        public Elemento(int x, int y, int largura, int altura)
         {
             X = x;
             Y = y;
             Largura = largura;
             Altura = altura;
-            Velocidade = velocidade;
         }
     }
 }
