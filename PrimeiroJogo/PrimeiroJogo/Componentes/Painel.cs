@@ -7,9 +7,7 @@ namespace PrimeiroJogo.Componentes
 {
     class Painel : Panel
     {
-        private bool _iniciado = false;
         private bool _fimDeJogo = false;
-        private bool _jogando = true;
         private readonly int _fps = 1000 / 20;
         private Elemento _tiro;
         private Elemento _jogador;
@@ -26,9 +24,6 @@ namespace PrimeiroJogo.Componentes
         protected override void InitLayout()
         {
             Dock = DockStyle.Fill;
-            PreviewKeyDown += Painel_PreviewKeyDown;
-            KeyDown += Painel_KeyDown;
-            KeyUp += Painel_KeyUp;
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -61,31 +56,6 @@ namespace PrimeiroJogo.Componentes
             }
         }
 
-        private void Painel_KeyUp(object sender, KeyEventArgs e)
-        {
-            SetaPressionada((int)e.KeyCode, false);
-        }
-
-        private void Painel_KeyDown(object sender, KeyEventArgs e)
-        {
-            SetaPressionada((int)e.KeyCode, true);
-        }
-
-        private void Painel_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
-        {
-            switch (e.KeyCode)
-            {
-                case Keys.Up:
-                case Keys.Down:
-                case Keys.Left:
-                case Keys.Right:
-                    e.IsInputKey = true;
-                    break;
-                default:
-                    break;
-            }
-        }
-
         private void Iniciar()
         {
             // Intancia todos os elementos
@@ -98,14 +68,14 @@ namespace PrimeiroJogo.Componentes
             for (int i = 0; i < _blocos.Length; i++)
             {
                 // Faz com que os _blocos tenham 10 pixels de espaço entre eles
-                int espaco = i * _larg + 10 * (i + 1);
+                int espaco = i * _larg + 15 * (i + 1);
                 _blocos[i] = new Elemento(espaco, 0, _larg, _larg);
                 _blocos[i].Velocidade = 1f;
             }
 
             // Definindo a posição do _jogador
-            _jogador.X = Width / 2 - _jogador.X / 2;
-            _jogador.Y = Height / 2 - _jogador.Y / 2;
+            _jogador.X = 221;
+            _jogador.Y = 391;
             _tiro.Altura = Height - _jogador.Altura;
         }
 
@@ -146,13 +116,14 @@ namespace PrimeiroJogo.Componentes
             {
                 if (b.Y > _limiteLinha)
                 {
-                    _fimDeJogo = false;
+                    _fimDeJogo = true;
                     break;
                 }
 
                 // Verificando se houve colisão com o tiro
                 if (Colide(b, _tiro) && b.Y > 0)
                 {
+                    // Faz que o tiro volte
                     b.Y -= (int)b.Velocidade * 2;
                     _tiro.Y = b.Y;
                 }
@@ -187,7 +158,7 @@ namespace PrimeiroJogo.Componentes
             return false;
         }
 
-        private void SetaPressionada(int tecla, bool pressionada)
+        public void SetaPressionada(int tecla, bool pressionada)
         {
             switch (tecla)
             {
@@ -208,15 +179,11 @@ namespace PrimeiroJogo.Componentes
 
         public void Atualiza()
         {
-            if (_iniciado == false)
-            {
-                Iniciar();
-                _iniciado = true;
-            }
+            Iniciar();
 
             int prxAtualizacao = 0;
 
-            while (_fimDeJogo) 
+            while (!_fimDeJogo) 
             {
                 if (Environment.TickCount >= prxAtualizacao)
                 {
@@ -225,6 +192,7 @@ namespace PrimeiroJogo.Componentes
                     prxAtualizacao = Environment.TickCount + _fps;
                 }
             }
+            MessageBox.Show("Sua pontuação: " + _pontuacao, "Fim de jogo!");
         }
     }
 }
